@@ -35,8 +35,8 @@ for i = 1:size(dynVariable,2)
             %             typeStr = 'Joint torque';
         case iDynTree.NET_EXT_WRENCH
             typeStr = 'Ext. Wrench ';
-            %         case iDynTree.DOF_ACCELERATION
-            %             typeStr = 'Joint acc   ';
+        case iDynTree.DOF_ACCELERATION
+            typeStr = 'Joint acc   ';
     end
     range = currentInfo.range;
     
