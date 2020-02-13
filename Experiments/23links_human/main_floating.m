@@ -307,6 +307,9 @@ if opts.task1_SOT
         synchroKin.state, baseVelocity6D, G_T_b);
     disp(strcat('[End] Computing the linear rate of change of momentum'));
     
+    %% Set rate of change of angular momentum to zero
+    dotL_ang = zeros(size(properDotL_lin));
+    
 end
 
 %% Measurements wrapping
@@ -321,6 +324,7 @@ data = dataPackaging(humanModel, ...
     suit, ... %     angAcc_sensor, ...
     fext, ...
     properDotL_lin, ...
+    dotL_ang, ...
     synchroKin.ddq, ...
     bucket.linkInShoes, ...
     priors, ...
@@ -345,10 +349,10 @@ disp('[End] Wrapping measurements');
 if opts.task1_SOT
     % modify variances for the external forces at the hands
     range_leftHand = rangeOfSensorMeasurement(berdy, iDynTree.NET_EXT_WRENCH_SENSOR, 'LeftHand',opts.stackOfTaskMAP);
-    Sigmay(range_leftHand:range_leftHand+2,range_leftHand:range_leftHand+2) = priors.fext_hands;
+    Sigmay(range_leftHand:range_leftHand+5,range_leftHand:range_leftHand+5) = priors.fext_hands;
     
     range_rightHand = rangeOfSensorMeasurement(berdy, iDynTree.NET_EXT_WRENCH_SENSOR, 'RightHand',opts.stackOfTaskMAP);
-    Sigmay(range_rightHand:range_rightHand+2,range_rightHand:range_rightHand+2) = priors.fext_hands;
+    Sigmay(range_rightHand:range_rightHand+5,range_rightHand:range_rightHand+5) = priors.fext_hands;
 end
 
 % ---------------------------------------------------

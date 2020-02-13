@@ -35,7 +35,7 @@ grid on;
 % % -------------
 % RIGHT UPPER Leg
 % simulated in y vector
-range_accSIM_rightUpperLeg = rangeOfSensorMeasurement(berdy, iDynTree.ACCELEROMETER_SENSOR, 'RightUpperLeg_accelerometer');
+range_accSIM_rightUpperLeg = rangeOfSensorMeasurement(berdy, iDynTree.ACCELEROMETER_SENSOR, 'RightUpperLeg_accelerometer', opts.stackOfTaskMAP);
 acc.simulated.rightUpperLeg = y_sim((range_accSIM_rightUpperLeg:range_accSIM_rightUpperLeg+2),:);
 % acc.simulated.rightUpperArm_sigma = Sigmay((range_accSIM_rightUpperArm:range_accSIM_rightUpperArm+2),(range_accSIM_rightUpperArm:range_accSIM_rightUpperArm+2));
 
@@ -83,7 +83,7 @@ xlim([0 len])
 % % -------------
 % RIGHT lower Leg
 % simulated in y vector
-range_accSIM_rightLowerLeg = rangeOfSensorMeasurement(berdy, iDynTree.ACCELEROMETER_SENSOR, 'RightLowerLeg_accelerometer');
+range_accSIM_rightLowerLeg = rangeOfSensorMeasurement(berdy, iDynTree.ACCELEROMETER_SENSOR, 'RightLowerLeg_accelerometer',opts.stackOfTaskMAP);
 acc.simulated.rightLowerLeg = y_sim((range_accSIM_rightLowerLeg:range_accSIM_rightLowerLeg+2),:);
 % acc.measured.rightForeArm_sigma = Sigmay((range_accSIM_rightForeArm:range_accSIM_rightForeArm+2),(range_accSIM_rightForeArm:range_accSIM_rightForeArm+2));
 
@@ -145,7 +145,7 @@ end
 
 %%
 % LEFT
-fig = figure('Name', 'Linear Acceleration - Right','NumberTitle','off');
+fig = figure('Name', 'Linear Acceleration - Left','NumberTitle','off');
 axes1 = axes('Parent',fig,'FontSize',16);
 box(axes1,'on');
 hold(axes1,'on');
@@ -153,7 +153,7 @@ grid on;
 % % -------------
 % LEFT UPPER ARM
 % simulated in y vector
-range_accSIM_leftUpperArm = rangeOfSensorMeasurement(berdy, iDynTree.ACCELEROMETER_SENSOR, 'LeftUpperArm_accelerometer');
+range_accSIM_leftUpperArm = rangeOfSensorMeasurement(berdy, iDynTree.ACCELEROMETER_SENSOR, 'LeftUpperArm_accelerometer',opts.stackOfTaskMAP);
 acc.simulated.leftUpperArm = y_sim((range_accSIM_leftUpperArm:range_accSIM_leftUpperArm+2),:);
 % acc.measured.leftUpperArm_sigma = Sigmay((range_accSIM_leftUpperArm:range_accSIM_leftUpperArm+2),(range_accSIM_leftUpperArm:range_accSIM_leftUpperArm+2));
 
@@ -201,7 +201,7 @@ xlim([0 len])
 % % -------------
 % LEFT FORE ARM
 % simulated in y vector
-range_accSIM_leftForeArm = rangeOfSensorMeasurement(berdy, iDynTree.ACCELEROMETER_SENSOR, 'LeftForeArm_accelerometer');
+range_accSIM_leftForeArm = rangeOfSensorMeasurement(berdy, iDynTree.ACCELEROMETER_SENSOR, 'LeftForeArm_accelerometer',opts.stackOfTaskMAP);
 acc.simulated.leftForeArm = y_sim((range_accSIM_leftForeArm:range_accSIM_leftForeArm+2),:);
 % acc.measured.leftForeArm_sigma = Sigmay((range_accSIM_leftForeArm:range_accSIM_leftForeArm+2),(range_accSIM_leftForeArm:range_accSIM_leftForeArm+2));
 
@@ -213,7 +213,7 @@ subplot (3,3,4) %  left x component
 plot1 = plot(acc.simulated.leftForeArm(1,:),'b','lineWidth',1.5);
 hold on
 specific_vector_sigma(1,:) = acc.measured.leftForeArm_sigma(1);
-shad2 = shadedErrorBar([],acc.measured.rightForeArm(1,:),2.*sqrt(specific_vector_sigma(1,:)),'r',1.5);
+shad2 = shadedErrorBar([],acc.measured.leftForeArm(1,:),2.*sqrt(specific_vector_sigma(1,:)),'r',1.5);
 ylabel('rightForeArm','HorizontalAlignment','center',...
     'FontWeight','bold',...
     'FontSize',18,...
@@ -266,12 +266,12 @@ hold(axes1,'on');
 grid on;
 
 % simulated in y vector
-range_fextMEAS_rightFoot = rangeOfSensorMeasurement(berdy, iDynTree.NET_EXT_WRENCH_SENSOR, 'RightFoot');
+range_fextMEAS_rightFoot = rangeOfSensorMeasurement(berdy, iDynTree.NET_EXT_WRENCH_SENSOR, 'RightFoot', opts.stackOfTaskMAP);
 fext.measured.rightFoot = y_sim((range_fextMEAS_rightFoot:range_fextMEAS_rightFoot+5),:);
 fext.measured.rightFoot_sigma = diag(Sigmay((range_fextMEAS_rightFoot:range_fextMEAS_rightFoot+5),(range_fextMEAS_rightFoot:range_fextMEAS_rightFoot+5)));
 
 % % acc measured in y vector
-range_fextEST_rightFoot = rangeOfDynamicVariable(berdy, iDynTree.NET_EXT_WRENCH, 'RightFoot');
+range_fextEST_rightFoot = rangeOfDynamicVariable(berdy, iDynTree.NET_EXT_WRENCH, 'RightFoot',opts.stackOfTaskMAP);
 fext.estimated.rightFoot = estimation.mu_dgiveny((range_fextEST_rightFoot:range_fextEST_rightFoot+5 ),:);
 
 subplot (331) % Right foot x component
@@ -312,12 +312,12 @@ axis tight;
 xlim([0 len])
 
 % simulated in y vector
-range_fextMEAS_leftFoot = rangeOfSensorMeasurement(berdy, iDynTree.NET_EXT_WRENCH_SENSOR, 'LeftFoot');
+range_fextMEAS_leftFoot = rangeOfSensorMeasurement(berdy, iDynTree.NET_EXT_WRENCH_SENSOR, 'LeftFoot',opts.stackOfTaskMAP);
 fext.measured.leftFoot = y_sim((range_fextMEAS_leftFoot:range_fextMEAS_leftFoot+5),:);
 fext.measured.leftFoot_sigma = diag(Sigmay((range_fextMEAS_leftFoot:range_fextMEAS_leftFoot+5),(range_fextMEAS_leftFoot:range_fextMEAS_leftFoot+5)));
 
 % acc measured in y vector
-range_fextEST_leftFoot = rangeOfDynamicVariable(berdy, iDynTree.NET_EXT_WRENCH, 'LeftFoot');
+range_fextEST_leftFoot = rangeOfDynamicVariable(berdy, iDynTree.NET_EXT_WRENCH, 'LeftFoot',opts.stackOfTaskMAP);
 fext.estimated.leftFoot = estimation.mu_dgiveny((range_fextEST_leftFoot:range_fextEST_leftFoot+5 ),:);
 
 subplot (334) % left foot x component
@@ -563,15 +563,15 @@ axis tight;
 xlim([0 len])
 
 % ----
-subplot (334) % right knee x component
-plot1 = plot(tau.estimated.rightKnee.rotx,'b','lineWidth',1.5);
-ylabel('rightKnee','HorizontalAlignment','center',...
-    'FontWeight','bold',...
-    'FontSize',18,...
-    'Interpreter','latex');
-grid on;
-axis tight;
-xlim([0 len])
+% subplot (334) % right knee x component
+% plot1 = plot(tau.estimated.rightKnee.rotx,'b','lineWidth',1.5);
+% ylabel('rightKnee','HorizontalAlignment','center',...
+%     'FontWeight','bold',...
+%     'FontSize',18,...
+%     'Interpreter','latex');
+% grid on;
+% axis tight;
+% xlim([0 len])
 
 subplot (335) % right knee y component
 plot1 = plot(tau.estimated.rightKnee.roty,'b','lineWidth',1.5);
@@ -677,17 +677,17 @@ grid on;
 axis tight;
 xlim([0 len])
 
-subplot (334) % left knee y component
-plot1 = plot(tau.estimated.leftKnee.rotx,'b','lineWidth',1.5);
-% shad2 = shadedErrorBar([],tau.estimated.leftKnee.roty,2.*sqrt(Sigma_tau.leftAnkle_roty),'b',1.5);
-ylabel('leftKnee','HorizontalAlignment','center',...
-    'FontWeight','bold',...
-    'FontSize',18,...
-    'Interpreter','latex');
-xlabel('N samples');
-grid on;
-axis tight;
-xlim([0 len])
+% % subplot (334) % left knee x component
+% % plot1 = plot(tau.estimated.leftKnee.rotx,'b','lineWidth',1.5);
+% % % shad2 = shadedErrorBar([],tau.estimated.leftKnee.roty,2.*sqrt(Sigma_tau.leftAnkle_roty),'b',1.5);
+% % ylabel('leftKnee','HorizontalAlignment','center',...
+% %     'FontWeight','bold',...
+% %     'FontSize',18,...
+% %     'Interpreter','latex');
+% % xlabel('N samples');
+% % grid on;
+% % axis tight;
+% % xlim([0 len])
 
 subplot (335) % left knee y component
 plot1 = plot(tau.estimated.leftKnee.roty,'b','lineWidth',1.5);
@@ -750,7 +750,7 @@ xlim([0 len])
 tightfig();
 % save
 if saveON
-    save2pdf(fullfile(figFolder, ('tau_sx_leg')),fig,600);
+    save2pdf(fullfile(bucket.pathToPlots, ('tau_sx_leg')),fig,600);
 end
 
 %% RIGHT ARM
@@ -823,18 +823,18 @@ grid on;
 axis tight;
 xlim([0 len])
 
-subplot (437) % right elbow x component
-plot1 = plot(tau.estimated.rightElbow.rotx,'b','lineWidth',1.5);
-% shad2 = shadedErrorBar([],tau.estimated.rightC7Shoulder.rotx,2.*sqrt(Sigma_tau.rightC7Shoulder_rotx),'b',1.5);
-hold on
-ylabel('rightElbow','HorizontalAlignment','center',...
-    'FontWeight','bold',...
-    'FontSize',18,...
-    'Interpreter','latex');
-xlabel('N samples');
-grid on;
-axis tight;
-xlim([0 len])
+% subplot (437) % right elbow x component
+% plot1 = plot(tau.estimated.rightElbow.rotx,'b','lineWidth',1.5);
+% % shad2 = shadedErrorBar([],tau.estimated.rightC7Shoulder.rotx,2.*sqrt(Sigma_tau.rightC7Shoulder_rotx),'b',1.5);
+% hold on
+% ylabel('rightElbow','HorizontalAlignment','center',...
+%     'FontWeight','bold',...
+%     'FontSize',18,...
+%     'Interpreter','latex');
+% xlabel('N samples');
+% grid on;
+% axis tight;
+% xlim([0 len])
 
 subplot (438) % right elbow y component
 plot1 = plot(tau.estimated.rightElbow.roty,'b','lineWidth',1.5);
@@ -868,14 +868,14 @@ grid on;
 axis tight;
 xlim([0 len])
 
-subplot (4,3,11) % right wrist y component
-plot1 = plot(tau.estimated.rightWrist.roty,'b','lineWidth',1.5);
-% shad2 = shadedErrorBar([],tau.estimated.rightShoulder.rotz,2.*sqrt(Sigma_tau.rightShoulder_rotz),'b',1.5);
-xlabel('N samples');
-title ('y');
-grid on;
-axis tight;
-xlim([0 len])
+% % subplot (4,3,11) % right wrist y component
+% % plot1 = plot(tau.estimated.rightWrist.roty,'b','lineWidth',1.5);
+% % % shad2 = shadedErrorBar([],tau.estimated.rightShoulder.rotz,2.*sqrt(Sigma_tau.rightShoulder_rotz),'b',1.5);
+% % xlabel('N samples');
+% % title ('y');
+% % grid on;
+% % axis tight;
+% % xlim([0 len])
 
 subplot (4,3,12) % right wrist z component
 plot1 = plot(tau.estimated.rightWrist.rotz,'b','lineWidth',1.5);
@@ -973,18 +973,18 @@ grid on;
 axis tight;
 xlim([0 len])
 
-subplot (437) % left elbow x component
-plot1 = plot(tau.estimated.leftElbow.rotx,'b','lineWidth',1.5);
-% shad2 = shadedErrorBar([],tau.estimated.rightC7Shoulder.rotx,2.*sqrt(Sigma_tau.rightC7Shoulder_rotx),'b',1.5);
-hold on
-ylabel('rightElbow','HorizontalAlignment','center',...
-    'FontWeight','bold',...
-    'FontSize',18,...
-    'Interpreter','latex');
-xlabel('N samples');
-grid on;
-axis tight;
-xlim([0 len])
+% % subplot (437) % left elbow x component
+% % plot1 = plot(tau.estimated.leftElbow.rotx,'b','lineWidth',1.5);
+% % % shad2 = shadedErrorBar([],tau.estimated.rightC7Shoulder.rotx,2.*sqrt(Sigma_tau.rightC7Shoulder_rotx),'b',1.5);
+% % hold on
+% % ylabel('rightElbow','HorizontalAlignment','center',...
+% %     'FontWeight','bold',...
+% %     'FontSize',18,...
+% %     'Interpreter','latex');
+% % xlabel('N samples');
+% % grid on;
+% % axis tight;
+% % xlim([0 len])
 
 subplot (438) % left elbow y component
 plot1 = plot(tau.estimated.leftElbow.roty,'b','lineWidth',1.5);
@@ -1018,14 +1018,14 @@ grid on;
 axis tight;
 xlim([0 len])
 
-subplot (4,3,11) % right wrist y component
-plot1 = plot(tau.estimated.leftWrist.roty,'b','lineWidth',1.5);
-% shad2 = shadedErrorBar([],tau.estimated.rightShoulder.rotz,2.*sqrt(Sigma_tau.rightShoulder_rotz),'b',1.5);
-xlabel('N samples');
-title ('y');
-grid on;
-axis tight;
-xlim([0 len])
+% % subplot (4,3,11) % right wrist y component
+% % plot1 = plot(tau.estimated.leftWrist.roty,'b','lineWidth',1.5);
+% % % shad2 = shadedErrorBar([],tau.estimated.rightShoulder.rotz,2.*sqrt(Sigma_tau.rightShoulder_rotz),'b',1.5);
+% % xlabel('N samples');
+% % title ('y');
+% % grid on;
+% % axis tight;
+% % xlim([0 len])
 
 subplot (4,3,12) % left wrist z component
 plot1 = plot(tau.estimated.leftWrist.rotz,'b','lineWidth',1.5);

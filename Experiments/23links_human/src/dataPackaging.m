@@ -1,4 +1,4 @@
-function [ dataPacked ] = dataPackaging(model, base, sensors, suit, fext, properDotL_lin, ddq, contactLink, priors, stackOfTaskMAP)
+function [ dataPacked ] = dataPackaging(model, base, sensors, suit, fext, properDotL_lin, dotL_ang, ddq, contactLink, priors, stackOfTaskMAP)
 %DATAPACKAGING creates a data struct organised in the following way:
 % - data.time (a unified time for all type of sensors)
 % Each substructure is identified by:
@@ -69,7 +69,7 @@ data.acc.var = priors.acc_IMU;
 % % % variance
 % % data.gyro.var = priors.gyro_IMU;
 
-%% FROM dL_lin
+%% FROM dL_lin and dL_ang
 if stackOfTaskMAP
     data.properDotL_lin  = struct;
     % type
@@ -77,9 +77,13 @@ if stackOfTaskMAP
     % id & meas
     data.properDotL_lin.id   = base;
     data.properDotL_lin.meas = properDotL_lin;
+    data.dotL_ang.meas = dotL_ang;
     % variance
     data.properDotL_lin.var  = priors.properDotL_lin;
+    data.dotL_ang.var        = priors.dotL_ang;
 end
+
+
 
 %% FROM ddq
 nOfSensor.DOFacc = size(ddq,1);
@@ -183,8 +187,8 @@ if stackOfTaskMAP
     % COM_sensor
     dataPacked(indx + 1).type         = data.properDotL_lin.type;
     dataPacked(indx + 1).id           = data.properDotL_lin.id;
-    dataPacked(indx + 1).meas         = data.properDotL_lin.meas;
-    dataPacked(indx + 1).var          = data.properDotL_lin.var;
+    dataPacked(indx + 1).meas         = [data.properDotL_lin.meas; data.dotL_ang.meas];
+    dataPacked(indx + 1).var          = [data.properDotL_lin.var; data.dotL_ang.var];
     indx = indx + 1;
 end
  

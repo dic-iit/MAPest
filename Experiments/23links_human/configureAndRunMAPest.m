@@ -19,8 +19,8 @@ bucket = struct;
 bucket.datasetRoot = fullfile(pwd, 'dataFloatingIWear');
 
 % Subject and task to be processed
-subjectID = 3;
-taskID = 2;
+subjectID = 1;
+taskID = 5;
 
 %% Options
 opts.analysis_48dofURDF = true;
@@ -54,8 +54,9 @@ bucket.SigmaD = 1e-4;
 % high reliability on the model constraints
 
 % for SOT in Task1
-priors.fext_hands     = 1e3  * eye(3);
+priors.fext_hands     = [1e3*eye(3) 0*eye(3); 0*eye(3) 1e3*eye(3)];
 priors.properDotL_lin = 1e-4 * ones(3,1);
+priors.dotL_ang       = 1e-4 * ones(3,1);
 
 %% Run MAPest stack of task (SOT)
 % =========================================================================
@@ -67,7 +68,14 @@ opts.task1_SOT = true;
 opts.stackOfTaskMAP = true; % argument value for berdy functions for task1
 main_floating;
 disp('[End] Run SOT Task1');
+
+%% Save the y_sim variable for task1 as y'_sim
+assignin('base','y1_sim',y_sim)
+save('y_sim.mat','y1_sim')
+
 % plotMAPestDebug
+
+
 
 % =========================================================================
 %  RUN TASK2
