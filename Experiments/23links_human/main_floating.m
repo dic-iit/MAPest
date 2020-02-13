@@ -299,17 +299,21 @@ if opts.task1_SOT
     
     % plot_baseVelocityInPattern;
     
-    %% Compute the proper rate of change of the linear momentum, properDotL_lin
+    %% Compute the proper rate of change of momentum
+    % properDotL = [properDotL_lin; properDotL_ang];
+
+    % Compute the proper rate of change of the linear momentum, properDotL_lin
     disp('-------------------------------------------------------------------');
     disp(strcat('[Start] Computing the linear rate of change of momentum...'));
     baseVelocity6D = [baseVelocity.linear ; baseVelocity.angular];
     properDotL_lin = computeProperRateOfChangeOfLinearMomentum(human_kinDynComp, humanModel, ...
         synchroKin.state, baseVelocity6D, G_T_b);
     disp(strcat('[End] Computing the linear rate of change of momentum'));
-    
-    %% Set rate of change of angular momentum to zero
-    dotL_ang = zeros(size(properDotL_lin));
-    
+    % Set the proper rate of change of the angular momentum (properDotL_ang) to zero
+    properDotL_ang = zeros(size(properDotL_lin));
+    % Build properDotL
+    properDotL = [properDotL_lin; properDotL_ang];
+
 end
 
 %% Measurements wrapping
@@ -323,8 +327,7 @@ data = dataPackaging(humanModel, ...
     humanSensors, ...
     suit, ... %     angAcc_sensor, ...
     fext, ...
-    properDotL_lin, ...
-    dotL_ang, ...
+    properDotL, ...
     synchroKin.ddq, ...
     bucket.linkInShoes, ...
     priors, ...
