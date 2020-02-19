@@ -352,10 +352,10 @@ disp('[End] Wrapping measurements');
 if opts.task1_SOT
     % modify variances for the external forces at the hands
     range_leftHand = rangeOfSensorMeasurement(berdy, iDynTree.NET_EXT_WRENCH_SENSOR, 'LeftHand',opts.stackOfTaskMAP);
-    Sigmay(range_leftHand:range_leftHand+5,range_leftHand:range_leftHand+5) = priors.fext_hands;
+    Sigmay(range_leftHand:range_leftHand+5,range_leftHand:range_leftHand+5) = diag(priors.fext_hands);
     
     range_rightHand = rangeOfSensorMeasurement(berdy, iDynTree.NET_EXT_WRENCH_SENSOR, 'RightHand',opts.stackOfTaskMAP);
-    Sigmay(range_rightHand:range_rightHand+5,range_rightHand:range_rightHand+5) = priors.fext_hands;
+    Sigmay(range_rightHand:range_rightHand+5,range_rightHand:range_rightHand+5) = diag(priors.fext_hands);
 end
 
 % ---------------------------------------------------

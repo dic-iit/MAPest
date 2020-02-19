@@ -54,7 +54,7 @@ bucket.SigmaD = 1e-4;
 % high reliability on the model constraints
 
 % for SOT in Task1
-priors.fext_hands = [1e3*eye(3) 0*eye(3); 0*eye(3) 1e3*eye(3)];
+priors.fext_hands = 1e3 * ones(6,1);
 priors.properDotL = 1e-4 * ones(6,1);
 
 %% Run MAPest stack of task (SOT)
