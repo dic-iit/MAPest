@@ -35,23 +35,19 @@ leftFoot_T_leftHeelPos.fromMatlab(leftHeelSeenFromLeftFoot); % in m
 for i = 1 : samples
     % rotation => hp: pure rotation around y axis
     leftFoot_T_leftFtShoeRot = iDynTree.Rotation();
-    [leftFoot_R_leftFtShoe, shoes.betaInDeg_LF(i)]  = computePureRotationAroundY(orientationInQuat.leftFootOrientation(:,i));
-    shoes.leftFoot_R_leftFtShoe{i,1} = leftFoot_R_leftFtShoe;
-    leftFoot_T_leftFtShoeRot.fromMatlab(leftFoot_R_leftFtShoe);
+    [~, shoes.betaInDeg_LF(i), leftFoot_R_leftFtShoe_minus]  = computePureRotationAroundY(orientationInQuat.leftFootOrientation(:,i));
+    shoes.leftFoot_R_leftFtShoe{i,1} = leftFoot_R_leftFtShoe_minus;
+    leftFoot_T_leftFtShoeRot.fromMatlab(leftFoot_R_leftFtShoe_minus);
     % transform
     leftFoot_T_leftFtShoe = iDynTree.Transform(leftFoot_T_leftFtShoeRot,...
         leftFoot_T_leftHeelPos + leftHeel_T_leftFtShoePos);
     leftShoeWrench = wearData.ftShoes.Left(:,i);
     shoes.Left_HF(:,i) = -1 * leftFoot_T_leftFtShoe.asAdjointTransformWrench().toMatlab() * leftShoeWrench;
-    
-    % ---- test 
     % compute G_R_S(left) = G_R_F * F_R_S(left)
     G_R_leftFoot = quat2Mat(orientationInQuat.leftFootOrientation(:,i));
-    shoes.G_R_leftFtShoe{i,1} = G_R_leftFoot * leftFoot_R_leftFtShoe;
+    shoes.G_R_leftFtShoe{i,1} = G_R_leftFoot * leftFoot_R_leftFtShoe_minus;
     
     shoes.G_f_leftFtShoe(:,i) = -1 * shoes.G_R_leftFtShoe{i,1} * leftShoeWrench(1:3,:);
-    % ----
-    
 end
 % RIGHT--------------------------------------------------------------------
 % position
@@ -63,38 +59,34 @@ rightFoot_T_rightHeelPos.fromMatlab(rightHeelSeenFromRightFoot); % in m
 for i = 1 : samples
     % rotation => hp: pure rotation around y axis
     rightFoot_T_rightFtShoeRot = iDynTree.Rotation();
-    [rightFoot_R_rightFtShoe, shoes.betaInDeg_RF(1,i)] = computePureRotationAroundY(orientationInQuat.rightFootOrientation(:,i));
-    shoes.rightFoot_R_rightFtShoe{i,1} = rightFoot_R_rightFtShoe;
-    rightFoot_T_rightFtShoeRot.fromMatlab(rightFoot_R_rightFtShoe);
+    [~, shoes.betaInDeg_RF(1,i), rightFoot_R_rightFtShoe_minus] = computePureRotationAroundY(orientationInQuat.rightFootOrientation(:,i));
+    shoes.rightFoot_R_rightFtShoe{i,1} = rightFoot_R_rightFtShoe_minus;
+    rightFoot_T_rightFtShoeRot.fromMatlab(rightFoot_R_rightFtShoe_minus);
     % transform
     rightFoot_T_rightFtShoe = iDynTree.Transform(rightFoot_T_rightFtShoeRot,...
         rightFoot_T_rightHeelPos + rightHeel_T_rightFtShoePos);
     rightShoeWrench = wearData.ftShoes.Right(:,i);
     shoes.Right_HF(:,i) = -1 * rightFoot_T_rightFtShoe.asAdjointTransformWrench().toMatlab() * rightShoeWrench;
-    
-    % ---- test
     % compute G_R_S(right) = G_R_F * F_R_S(right)
     G_R_rightFoot = quat2Mat(orientationInQuat.rightFootOrientation(:,i));
-    shoes.G_R_rightFtShoe{i,1} = G_R_rightFoot * rightFoot_R_rightFtShoe;
+    shoes.G_R_rightFtShoe{i,1} = G_R_rightFoot * rightFoot_R_rightFtShoe_minus;
     
     shoes.G_f_rightFtShoe(:,i) = -1 * shoes.G_R_rightFtShoe{i,1} * rightShoeWrench(1:3,:);
-    % ----
 end
 
-% ---- test 
+% Computation of the equation terms
 for i = 1 : samples
     % term 1: b_R_G * G_R_Sleft * f_Sleft + b_R_G * G_R_Sright * f_Sright
     G_R_b = quat2Mat(orientationInQuat.baseOrientation(:,i));
     shoes.term1(:,i) = G_R_b' * shoes.G_R_leftFtShoe{i,1} * wearData.ftShoes.Left(1:3,i) + ...
         G_R_b' * shoes.G_R_rightFtShoe{i,1} * wearData.ftShoes.Right(1:3,i); 
-    % term 2: b_R_G * m * g,  g = [0;0;-9.81]
-    shoes.term2(:,i) = G_R_b' * mass * [0.0; 0.0; -9.81];
+    % term 2: b_R_G * m * g,  g = [0;0;9.81]
+    shoes.term2(:,i) =G_R_b' * mass * [0.0; 0.0; 9.81];
 end
-% ----
 end
 
 %% Inline function
-function [R_y_inRad, betaInDeg] = computePureRotationAroundY(orientationInQuaternion)
+function [R_y_inRad, betaInDeg, R_y_inRad_minus] = computePureRotationAroundY(orientationInQuaternion)
 e3 = [0;0;1];
 G_R_foot = quat2Mat(orientationInQuaternion);
 zComponentOf_G_R_foot = G_R_foot * e3;
@@ -104,6 +96,8 @@ R_y_inRad = [cosBeta, 0.0, sinBeta;
                  0.0, 1.0, 0.0;
             -sinBeta, 0.0, cosBeta];
 tan_y = sqrt(sinBeta^2/cosBeta^2);
-tan_cla_y = sinBeta/cosBeta;
 betaInDeg = atan(tan_y) * 180/pi;
+R_y_inRad_minus = [cos(-atan(tan_y)), 0.0, sin(-atan(tan_y));
+                 0.0, 1.0, 0.0;
+            -sin(-atan(tan_y)), 0.0, cos(-atan(tan_y))];
 end
