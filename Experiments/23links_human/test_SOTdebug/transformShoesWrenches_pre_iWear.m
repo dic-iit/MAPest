@@ -82,8 +82,8 @@ for i = 1 : samples
     G_R_b = quat2Mat(orientationInQuat.baseOrientation(:,i));
     shoes.term1(:,i) = G_R_b' * shoes.G_R_leftFtShoe{i,1} * wearData.ftShoes.Left(1:3,i) + ...
         G_R_b' * shoes.G_R_rightFtShoe{i,1} * wearData.ftShoes.Right(1:3,i); 
-    % term 2: b_R_G * m * g,  g = [0;0;-9.81]
-    shoes.term2(:,i) = G_R_b' * mass * [0.0; 0.0; -9.81];
+    % term 2: b_R_G * m * g,  g = [0;0;9.81]
+    shoes.term2(:,i) = G_R_b' * mass * [0.0; 0.0; 9.81];
 end
 % ----
 end

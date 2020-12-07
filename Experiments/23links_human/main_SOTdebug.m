@@ -10,7 +10,7 @@ addpath(genpath('../../external'));
 addpath(genpath('scripts'));
 addpath(genpath('test_SOTdebug'));
 
-opts.static = true;
+opts.static = false;
 if opts.static
     %% Static dataset
     % suit
@@ -150,7 +150,7 @@ end
 
 %% Transform shoes wrenches
 shoes     = transformShoesWrenches_iWear(orientation, wearData, height_heelFoot, mass);
-% shoes_pre = transformShoesWrenches_pre_iWear(orientation, wearData, height_heelFoot, mass);
+shoes_pre = transformShoesWrenches_pre_iWear(orientation, wearData, height_heelFoot, mass);
 % save(fullfile(bucket.pathToProcessedData,'shoes_iWear.mat'),'shoes');
 % save(fullfile(bucket.pathToProcessedData,'shoesPre_iWear.mat'),'shoes_pre');
 
@@ -170,6 +170,28 @@ xlabel('sample','FontSize',20);
 leg = legend([plot_betaLF, plot_betaRF],{'\beta_{left}', '\beta_{right}'});
 
 %% Plot equation terms comparison
+ylabel_wrenches = {'$f_x$ [N]', '$f_y$ [N]','$f_z$ [N]'};
+fig = figure();
+axes1 = axes('Parent',fig,'FontSize',16);
+box(axes1,'on');
+hold(axes1,'on');
+for axisIdx = 1 : 3
+    subplot (3,1,axisIdx)
+    % term_1
+    plot_term1 = plot(shoes.term1(axisIdx,:),'lineWidth',2);
+    hold on;
+    % term 2
+    plot_term2 = plot(shoes.term2(axisIdx,:),'lineWidth',2);
+    ylabel(ylabel_wrenches(axisIdx),'HorizontalAlignment','center',...
+        'FontSize',40,'interpreter','latex');
+    % legend
+    leg = legend([plot_term1, plot_term2], ...
+        {'${}^{\mathcal{B}}R_G \sum {}^{\mathcal{B}}f^x$','${}^{\mathcal{B}}R_G mg$'});
+    set(leg,'Interpreter','latex','Location','northeast');
+    set(leg,'FontSize',25);
+end
+
+%% Plot equation terms comparison new (after correction) and old (before correction) code
 ylabel_wrenches = {'$f_x$ [N]', '$f_y$ [N]','$f_z$ [N]'};
 fig = figure();
 axes1 = axes('Parent',fig,'FontSize',16);
